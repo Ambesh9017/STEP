@@ -1,33 +1,35 @@
-
-public class PalindromeCheckerApp
+import java.util.Scanner;
+import java.util.Stack;
+class PalindromeChecker
 {
-    public static void main(String[] args)
-    {
-        String input = "racecar";
-        System.out.println("Input: " + input);
-        PalindromeService service = new PalindromeService();
-        boolean isPalindrome = service.checkPalindrome(input);
-
-        System.out.println("Is Palindrome?: " + isPalindrome);
+    public boolean checkPalindrome(String str) {
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < str.length(); i++) {
+            stack.push(str.charAt(i));
+        }
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) != stack.pop()) {
+                return false;
+            }
+        }
+        return true;
     }
 }
-
-
-class PalindromeService
+public class PalindromeCheckerApp
 {
-    public boolean checkPalindrome(String input)
-    {
-        int start = 0;
-        int end = input.length() - 1;
-        while (start < end)
-        {
-            if (input.charAt(start) != input.charAt(end))
-            {
-                return false; // Mismatch found
-            }
-            start++;
-            end--;
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter a string:");
+        String input = sc.nextLine();
+
+        PalindromeChecker checker = new PalindromeChecker();
+
+        if (checker.checkPalindrome(input)) {
+            System.out.println("The string is a Palindrome.");
+        } else {
+            System.out.println("The string is NOT a Palindrome.");
         }
-        return true; // All characters matched
+        sc.close();
     }
 }
