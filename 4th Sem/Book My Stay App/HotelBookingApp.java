@@ -1,118 +1,76 @@
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
-/**
- * ===============================================================
- * CLASS - Reservation
- * ===============================================================
- *
- * Use Case 5: Booking Request (FIFO)
- *
- * Description:
- * This class represents a booking request
- * made by a guest.
- *
- * At this stage, a reservation only captures
- * intent, not confirmation or room allocation.
- *
- * @version 5.0
- */
-class Reservation{
+// Reservation Class
+class Reservation {
     private String guestName;
-
     private String roomType;
 
-    public Reservation(String guestName, String roomType){
-        this.guestName=guestName;
-        this.roomType=roomType;
+    public Reservation(String guestName, String roomType) {
+        this.guestName = guestName;
+        this.roomType = roomType;
     }
 
-    public String getGuestName(){
+    public String getGuestName() {
         return guestName;
     }
 
-    public String getRoomType(){
+    public String getRoomType() {
         return roomType;
     }
 }
 
-/**
- * ===============================================================
- * CLASS - BookingRequestQueue
- * ===============================================================
- *
- * Use Case 5: Booking Request (FIFO)
- *
- * Description:
- * This class manages booking requests
- * using a queue to ensure fair allocation.
- *
- * Requests are processed strictly
- * in the order they are received.
- *
- * @version 5.0
- */
-class BookingRequestQueue{
-    private Queue<Reservation> requestQueue;
+// BookingHistory Class
+class BookingHistory {
 
-    public BookingRequestQueue(){
-        requestQueue=new LinkedList<>();
+    // List that stores confirmed reservations
+    private List<Reservation> confirmedReservations;
+
+    // Constructor initializes list
+    public BookingHistory() {
+        confirmedReservations = new ArrayList<>();
     }
 
-    public void addRequest(Reservation reservation){
-        requestQueue.offer(reservation);
+    // Add confirmed reservation
+    public void addReservation(Reservation reservation) {
+        confirmedReservations.add(reservation);
     }
 
-    public Reservation getNextRequest(){
-        return requestQueue.poll();
-    }
-
-    public boolean hasPendingRequests(){
-        return !requestQueue.isEmpty();
+    // Return all confirmed reservations
+    public List<Reservation> getConfirmedReservations() {
+        return confirmedReservations;
     }
 }
 
-/**
- * ===============================================================
- * MAIN CLASS - UseCase5BookingRequestQueue
- * ===============================================================
- *
- * Use Case 5: Booking Request (FIFO)
- *
- * Description:
- * This class demonstrates how booking
- * requests are accepted and queued
- * in a fair and predictable order.
- *
- * No room allocation or inventory
- * update is performed here.
- *
- * @version 5.0
- */
-public class HotelBookingApp{
-    public static void main(String[] args){
-        System.out.println("===== BOOKING REQUEST QUEUE =====\n");
+// BookingReportService Class
+class BookingReportService {
 
-        BookingRequestQueue bookingQueue=new BookingRequestQueue();
+    // Generate and display report
+    public void generateReport(BookingHistory history) {
 
-        Reservation r1=new Reservation("Abhi", "Single");
-        Reservation r2=new Reservation("Subha", "Double");
-        Reservation r3=new Reservation("Vanmathi", "Suite");
+        System.out.println("Booking History Report");
 
-        bookingQueue.addRequest(r1);
-        bookingQueue.addRequest(r2);
-        bookingQueue.addRequest(r3);
-
-        System.out.println("Processing booking requests (FIFO):\n");
-
-        while(bookingQueue.hasPendingRequests()){
-            Reservation r=bookingQueue.getNextRequest();
-
-            System.out.println("Guest: "+r.getGuestName());
-            System.out.println("Requested Room: "+r.getRoomType());
-            System.out.println("-----------------------------");
+        for (Reservation r : history.getConfirmedReservations()) {
+            System.out.println("Guest: " + r.getGuestName() +
+                    ", Room Type: " + r.getRoomType());
         }
-        System.out.println("All requests processed.");
-        System.out.println("Application terminated.");
+    }
+}
+
+// Main Class
+public class HotelBookingApp{
+
+    public static void main(String[] args) {
+
+        // Create booking history
+        BookingHistory history = new BookingHistory();
+
+        // Add confirmed bookings
+        history.addReservation(new Reservation("Abhi", "Single"));
+        history.addReservation(new Reservation("Subha", "Double"));
+        history.addReservation(new Reservation("Vanmathi", "Suite"));
+
+        // Generate report
+        BookingReportService reportService = new BookingReportService();
+        reportService.generateReport(history);
     }
 }
