@@ -1,73 +1,52 @@
 /**
- * ================================
- * MAIN CLASS - UseCase14TrainConsistMgmt
- * ================================
+ * ================================================================
+ * MAIN CLASS - UseCase16TrainConsistMgmt
+ * ================================================================
  *
- * Use Case 14: Handle Invalid Bogie Capacity (Custom Exception)
+ * Use Case 16: Sort Passenger Bogies by Capacity (Bubble Sort)
  *
  * Description:
- * This class prevents creation of passenger bogies
- * with invalid seating capacity using a custom exception.
- *
- * At this stage, the application:
- * - Defines a custom exception
- * - Validates capacity inside constructor
- * - Throws exception if capacity ≤ 0
- * - Prevents invalid bogie creation
- * - Continues execution safely
- *
- * This maps fail-fast validation using checked exceptions.
+ * This class demonstrates manual sorting of passenger
+ * bogie capacities using the Bubble Sort algorithm
+ * instead of built-in sorting utilities.
  *
  * @author Akshat
- * @version 14.0
+ * @version 16.0
  */
-public class UseCase14TrainConsistMgmt {
-
-    // ---- CUSTOM EXCEPTION ----
-    static class InvalidCapacityException extends Exception {
-        public InvalidCapacityException(String message) {
-            super(message);
-        }
-    }
-
-    // Passenger Bogie model with validation
-    static class PassengerBogie {
-        String type;
-        int capacity;
-
-        PassengerBogie(String type, int capacity) throws InvalidCapacityException {
-            if (capacity <= 0) {
-                throw new InvalidCapacityException("Capacity must be greater than zero");
-            }
-            this.type = type;
-            this.capacity = capacity;
-        }
-
-        @Override
-        public String toString() {
-            return type + " -> " + capacity;
-        }
-    }
+public class UseCase16TrainConsistMgmt {
 
     public static void main(String[] args) {
-        System.out.println("===========================================");
-        System.out.println(" UC14 - Handle Invalid Bogie Capacity ");
-        System.out.println("===========================================\n");
+        System.out.println("===============================================");
+        System.out.println(" UC16 - Manual Sorting using Bubble Sort ");
+        System.out.println("===============================================\n");
 
-        try {
-            PassengerBogie b1 = new PassengerBogie("Sleeper", 72);
-            System.out.println("Created Bogie: " + b1);
-        } catch (InvalidCapacityException e) {
-            System.out.println("Error: " + e.getMessage());
+        // Create array of passenger bogie capacities
+        int[] capacities = {72, 56, 24, 70, 60};
+
+        // Display original order
+        System.out.println("Original Capacities:");
+        for (int c : capacities) {
+            System.out.print(c + " ");
         }
 
-        try {
-            PassengerBogie b2 = new PassengerBogie("AC Chair", 0); // ❌ invalid
-            System.out.println("Created Bogie: " + b2);
-        } catch (InvalidCapacityException e) {
-            System.out.println("Error: " + e.getMessage());
+        // ---- BUBBLE SORT LOGIC ----
+        for (int i = 0; i < capacities.length - 1; i++) {
+            for (int j = 0; j < capacities.length - i - 1; j++) {
+                if (capacities[j] > capacities[j + 1]) {
+                    // Swap
+                    int temp = capacities[j];
+                    capacities[j] = capacities[j + 1];
+                    capacities[j + 1] = temp;
+                }
+            }
         }
 
-        System.out.println("\nUC14 exception handling completed...");
+        // Display sorted result
+        System.out.println("\n\nSorted Capacities (Ascending):");
+        for (int c : capacities) {
+            System.out.print(c + " ");
+        }
+
+        System.out.println("\n\nUC16 sorting completed...");
     }
 }
