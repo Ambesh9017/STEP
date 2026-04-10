@@ -1,57 +1,77 @@
-import java.util.Scanner;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * ================================================================
- * MAIN CLASS - UseCase11TrainConsistMgmnt
+ * MAIN CLASS - UseCase13TrainConsistMgmt
  * ================================================================
  *
- * Use Case 11: Validate Train ID and Cargo Code
+ * Use Case 13: Performance Comparison (Loops vs Streams)
  *
  * Description:
- * This class validates input formats using Regular Expressions.
+ * This class compares execution time of loop-based filtering
+ * versus stream-based filtering using System.nanoTime().
  *
  * At this stage, the application:
- * - Accepts Train ID input
- * - Accepts Cargo Code input
- * - Applies regex validation
- * - Displays validation result
+ * - Creates bogie test dataset
+ * - Measures loop execution time
+ * - Measures stream execution time
+ * - Calculates elapsed duration
+ * - Displays performance results
  *
- * This maps format validation logic using Pattern matching.
+ * This maps performance benchmarking using high-resolution timing.
  *
  * @author Akshat
- * @version 11.0
+ * @version 13.0
  */
-public class TrainConsistManagementApp {
+public class UseCase13TrainConsistMgmt {
+
+    // Bogie model
+    static class Bogie {
+        String type;
+        int capacity;
+
+        Bogie(String type, int capacity) {
+            this.type = type;
+            this.capacity = capacity;
+        }
+    }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        System.out.println("===============================================");
+        System.out.println(" UC13 - Performance Comparison (Loops vs Streams) ");
+        System.out.println("===============================================\n");
 
-        System.out.println("========================================");
-        System.out.println(" UC11 - Validate Train ID and Cargo Code ");
-        System.out.println("========================================\n");
+        // Create large test dataset
+        List<Bogie> bogies = new ArrayList<>();
+        for (int i = 0; i < 100000; i++) {
+            bogies.add(new Bogie("Sleeper", 50 + (i % 100)));
+        }
 
-        // Accept input
-        System.out.print("Enter Train ID (Format: TRN-1234): ");
-        String trainId = scanner.nextLine();
+        // ---- LOOP FILTERING ----
+        long loopStart = System.nanoTime();
+        List<Bogie> loopFiltered = new ArrayList<>();
+        for (Bogie b : bogies) {
+            if (b.capacity > 60) {
+                loopFiltered.add(b);
+            }
+        }
+        long loopEnd = System.nanoTime();
+        long loopDuration = loopEnd - loopStart;
 
-        System.out.print("Enter Cargo Code (Format: PET-AB): ");
-        String cargoCode = scanner.nextLine();
+        // ---- STREAM FILTERING ----
+        long streamStart = System.nanoTime();
+        List<Bogie> streamFiltered = bogies.stream()
+                .filter(b -> b.capacity > 60)
+                .collect(Collectors.toList());
+        long streamEnd = System.nanoTime();
+        long streamDuration = streamEnd - streamStart;
 
-        // ---- DEFINE REGEX RULES ----
-        Pattern trainIdPattern = Pattern.compile("TRN-\\d{4}");
-        Pattern cargoCodePattern = Pattern.compile("PET-[A-Z]{2}");
+        // ---- RESULTS ----
+        System.out.println("Loop Execution Time (ns): " + loopDuration);
+        System.out.println("Stream Execution Time (ns): " + streamDuration);
 
-        // Match inputs
-        boolean trainIdValid = trainIdPattern.matcher(trainId).matches();
-        boolean cargoCodeValid = cargoCodePattern.matcher(cargoCode).matches();
-
-        // Display results
-        System.out.println("\nValidation Results:");
-        System.out.println("Train ID Valid: " + trainIdValid);
-        System.out.println("Cargo Code Valid: " + cargoCodeValid);
-
-        System.out.println("\nUC11 validation completed...");
+        System.out.println("\nUC13 performance benchmarking completed...");
     }
 }
