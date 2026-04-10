@@ -1,52 +1,41 @@
-/**
- * ================================================================
- * MAIN CLASS - UseCase16TrainConsistMgmt
- * ================================================================
- *
- * Use Case 16: Sort Passenger Bogies by Capacity (Bubble Sort)
- *
- * Description:
- * This class demonstrates manual sorting of passenger
- * bogie capacities using the Bubble Sort algorithm
- * instead of built-in sorting utilities.
- *
- * @author Akshat
- * @version 16.0
- */
-public class UseCase16TrainConsistMgmt {
+import org.junit.Test;
+import static org.junit.Assert.*;
+import java.util.Arrays;
 
-    public static void main(String[] args) {
-        System.out.println("===============================================");
-        System.out.println(" UC16 - Manual Sorting using Bubble Sort ");
-        System.out.println("===============================================\n");
+public class UseCase17TrainConsistMgmtTest {
 
-        // Create array of passenger bogie capacities
-        int[] capacities = {72, 56, 24, 70, 60};
+    @Test
+    public void testSort_BasicAlphabeticalSorting() {
+        String[] bogies = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
+        Arrays.sort(bogies);
+        assertArrayEquals(new String[]{"AC Chair", "First Class", "General", "Luxury", "Sleeper"}, bogies);
+    }
 
-        // Display original order
-        System.out.println("Original Capacities:");
-        for (int c : capacities) {
-            System.out.print(c + " ");
-        }
+    @Test
+    public void testSort_UnsortedInput() {
+        String[] bogies = {"Luxury", "General", "Sleeper", "AC Chair"};
+        Arrays.sort(bogies);
+        assertArrayEquals(new String[]{"AC Chair", "General", "Luxury", "Sleeper"}, bogies);
+    }
 
-        // ---- BUBBLE SORT LOGIC ----
-        for (int i = 0; i < capacities.length - 1; i++) {
-            for (int j = 0; j < capacities.length - i - 1; j++) {
-                if (capacities[j] > capacities[j + 1]) {
-                    // Swap
-                    int temp = capacities[j];
-                    capacities[j] = capacities[j + 1];
-                    capacities[j + 1] = temp;
-                }
-            }
-        }
+    @Test
+    public void testSort_AlreadySortedArray() {
+        String[] bogies = {"AC Chair", "First Class", "General"};
+        Arrays.sort(bogies);
+        assertArrayEquals(new String[]{"AC Chair", "First Class", "General"}, bogies);
+    }
 
-        // Display sorted result
-        System.out.println("\n\nSorted Capacities (Ascending):");
-        for (int c : capacities) {
-            System.out.print(c + " ");
-        }
+    @Test
+    public void testSort_DuplicateBogieNames() {
+        String[] bogies = {"Sleeper", "AC Chair", "Sleeper", "General"};
+        Arrays.sort(bogies);
+        assertArrayEquals(new String[]{"AC Chair", "General", "Sleeper", "Sleeper"}, bogies);
+    }
 
-        System.out.println("\n\nUC16 sorting completed...");
+    @Test
+    public void testSort_SingleElementArray() {
+        String[] bogies = {"Sleeper"};
+        Arrays.sort(bogies);
+        assertArrayEquals(new String[]{"Sleeper"}, bogies);
     }
 }
