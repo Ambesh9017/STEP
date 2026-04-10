@@ -1,53 +1,77 @@
-package trainconsistmanagementapp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-import java.util.regex.Pattern;
+/**
+ * ================================================================
+ * MAIN CLASS - UseCase13TrainConsistMgmt
+ * ================================================================
+ *
+ * Use Case 13: Performance Comparison (Loops vs Streams)
+ *
+ * Description:
+ * This class compares execution time of loop-based filtering
+ * versus stream-based filtering using System.nanoTime().
+ *
+ * At this stage, the application:
+ * - Creates bogie test dataset
+ * - Measures loop execution time
+ * - Measures stream execution time
+ * - Calculates elapsed duration
+ * - Displays performance results
+ *
+ * This maps performance benchmarking using high-resolution timing.
+ *
+ * @author Akshat
+ * @version 13.0
+ */
+public class UseCase13TrainConsistMgmt {
 
-public TrainConsistManagementAppTest {
+    // Bogie model
+    static class Bogie {
+        String type;
+        int capacity;
 
-    @Test
-    public void testRegex_ValidTrainID() {
-        assertTrue(Pattern.matches("TRN-\\d{4}", "TRN-1234"));
+        Bogie(String type, int capacity) {
+            this.type = type;
+            this.capacity = capacity;
+        }
     }
 
-    @Test
-    public void testRegex_InvalidTrainIDFormat() {
-        assertFalse(Pattern.matches("TRN-\\d{4}", "TRAIN12"));
-        assertFalse(Pattern.matches("TRN-\\d{4}", "1234-TRN"));
-    }
+    public static void main(String[] args) {
+        System.out.println("===============================================");
+        System.out.println(" UC13 - Performance Comparison (Loops vs Streams) ");
+        System.out.println("===============================================\n");
 
-    @Test
-    public void testRegex_ValidCargoCode() {
-        assertTrue(Pattern.matches("PET-[A-Z]{2}", "PET-AB"));
-    }
+        // Create large test dataset
+        List<Bogie> bogies = new ArrayList<>();
+        for (int i = 0; i < 100000; i++) {
+            bogies.add(new Bogie("Sleeper", 50 + (i % 100)));
+        }
 
-    @Test
-    public void testRegex_InvalidCargoCodeFormat() {
-        assertFalse(Pattern.matches("PET-[A-Z]{2}", "PET-ab"));
-        assertFalse(Pattern.matches("PET-[A-Z]{2}", "PET123"));
-    }
+        // ---- LOOP FILTERING ----
+        long loopStart = System.nanoTime();
+        List<Bogie> loopFiltered = new ArrayList<>();
+        for (Bogie b : bogies) {
+            if (b.capacity > 60) {
+                loopFiltered.add(b);
+            }
+        }
+        long loopEnd = System.nanoTime();
+        long loopDuration = loopEnd - loopStart;
 
-    @Test
-    public void testRegex_TrainIDDigitLengthValidation() {
-        assertFalse(Pattern.matches("TRN-\\d{4}", "TRN-123"));
-        assertFalse(Pattern.matches("TRN-\\d{4}", "TRN-12345"));
-    }
+        // ---- STREAM FILTERING ----
+        long streamStart = System.nanoTime();
+        List<Bogie> streamFiltered = bogies.stream()
+                .filter(b -> b.capacity > 60)
+                .collect(Collectors.toList());
+        long streamEnd = System.nanoTime();
+        long streamDuration = streamEnd - streamStart;
 
-    @Test
-    public void testRegex_CargoCodeUppercaseValidation() {
-        assertFalse(Pattern.matches("PET-[A-Z]{2}", "PET-ab"));
-    }
+        // ---- RESULTS ----
+        System.out.println("Loop Execution Time (ns): " + loopDuration);
+        System.out.println("Stream Execution Time (ns): " + streamDuration);
 
-    @Test
-    public void testRegex_EmptyInputHandling() {
-        assertFalse(Pattern.matches("TRN-\\d{4}", ""));
-        assertFalse(Pattern.matches("PET-[A-Z]{2}", ""));
-    }
-
-    @Test
-    public void testRegex_ExactPatternMatch() {
-        assertFalse(Pattern.matches("TRN-\\d{4}", "TRN-1234X"));
-        assertFalse(Pattern.matches("PET-[A-Z]{2}", "PET-AB1"));
+        System.out.println("\nUC13 performance benchmarking completed...");
     }
 }
